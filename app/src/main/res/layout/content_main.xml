@@ -13,8 +13,9 @@
     tools:context="com.aaron.androidruntimepermissions.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+    <Button
+        android:id="@+id/call"
+        android:text="Make a Call"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:layout_height="wrap_content"/>
 </RelativeLayout>
