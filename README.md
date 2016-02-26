@@ -100,17 +100,81 @@ if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest
 
 如果用户点击对话框`取消`按钮，授权结果；如果点击`确定`按钮，再次申请权限。具体交互可以看效果图。完整代码请戳[这里](AndroidRuntimePermissions/app/src/main/java/com/aaron/androidruntimepermissions/MainActivity.java)。
 
-## 轮子
+## 4 轮子
 
 通过上面讲解，大家也可以看出，虽然动态权限的编码逻辑简单，涉及的Api也就几个。但由于申请权限的位置和授权结果回调分别在两个地方，给人的感觉就一个字**乱**；并且，如果Activity规模较大、需要申请权限较多时，代码就会变得混乱。针对这些，前辈们封装了许多[动态权限第三方库](https://gist.github.com/dlew/2a21b06ee8715e0f7338)，这里拿[PermissionsDispatcher](https://github.com/hotchemi/PermissionsDispatcher)进行说明。PermissionsDispatcher具有如下优点：
 
 - 采用注解，代码形式简洁；
 - PermissionsDispatcher采用编译时生成代理类，让Activity/Fragment调用。因此，在效率上和官方写法没有区别。
 
+### 4.1 配置依赖
+
+在工程`build.gradle`文件加入依赖：
+
+```
+buildscript {
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+```
+
+在`app/build.gradle`加入依赖：
+
+```
+apply plugin: 'android-apt'
+
+dependencies {
+  compile 'com.github.hotchemi:permissionsdispatcher:2.0.7'
+  apt 'com.github.hotchemi:permissionsdispatcher-processor:2.0.7'
+}
+```
+
+### 4.2 使用
+
+给需要动态权限的Activity或者Fragment加上注解`RuntimePermissions`：
+
+```
+@RuntimePermissions
+public class MainActivity extends AppCompatActivity {
+  // ...
+}
+```
+
+给涉及到动态权限的方法加上注解`@NeedsPermission`：
+
+```
+@RuntimePermissions
+public class MainActivity extends AppCompatActivity {
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    void callPhone() {
+        // Trigger the calling of a number here
+    }
+}
+```
+
+**重新编译工程**后，将产生一个以`PermissionsDispatcher`为后缀的代理类，例如这里是`MainActivityPermissionsDispatcher`。
+
+> 如果提示找不到`MainActivityPermissionsDispatcher`类，说明apt代码生成失败，重启Android Studio试试。
+
+代理类生成后，重写权限申请回调，让代理类来处理：
+
+```
+@Override
+public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, REQUEST_PERMISSION_CALL_PHONE, grantResults);
+}
+```
+
+### 4.3 处理授权结果
+
+
+
 ## 总结
 
 - 动态授权，对于一些流氓应用是十分有必要的。但是，有些超级流氓，如果你不授权就直接退出应用，也是无奈，比如某宝...
-- ，如果Activity规模较大、需要申请权限较多时，代码就会变得混乱。
+- 如果Activity规模较大、需要申请权限较多时，代码就会变得混乱。
 
 针对第二点，前辈们封装了不少库。
 
