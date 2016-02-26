@@ -58,6 +58,51 @@ public void onRequestPermissionsResult(int requestCode,
 }
 ```
 
+### 3.3 授权提示
+
+当应用首次申请权限时，如果用户点击拒绝，下次再申请权限，Android允许你提示用户，你为什么需要这个权限，好引导用户是否授权。这个功能通过[shouldShowRequestPermissionRationale()](http://developer.android.com/reference/android/support/v4/app/ActivityCompat.html#shouldShowRequestPermissionRationale(android.app.Activity, java.lang.String))实现。例如，可以弹出一个对话框提示用户：
+
+```
+ if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest
+                    .permission.CALL_PHONE)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("说明")
+                        .setMessage("需要使用电话权限，进行电话测试")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new
+                                        String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_PERMISSION_CALL_PHONE);
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                return;
+                            }
+                        })
+                        .create()
+                        .show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{android
+                        .Manifest.permission.CALL_PHONE}, REQUEST_PERMISSION_CALL_PHONE);
+            }
+```
+
+如果用户点击对话框`取消`按钮，授权结果；如果点击`确定`按钮，再次申请权限。具体交互可以看效果图。
+
+## 总结
+
+- 动态授权，对于一些流氓应用是十分有必要的。但是，有些超级流氓，如果你不授权就直接退出应用，也是无奈，比如某宝...
+- 申请权限的位置和授权结果回调分别在两个地方，如果Activity规模较大、需要申请权限较多时，代码就会变得混乱。
+
+针对第二点，前辈们封装了不少库。
+
+- [PermissionGen](https://github.com/lovedise/PermissionGen) 
+- [RxPermissions](https://github.com/tbruyelle/RxPermissions)
+ 
+PermissionGen使用相对简单，RxPermissions支持RxJava，大家可以根据项目需要进行选择。
+
 ## 参考
 
 - [Working with System Permissions](http://developer.android.com/training/permissions/index.html)
