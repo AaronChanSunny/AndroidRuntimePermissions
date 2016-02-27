@@ -300,14 +300,10 @@ final class MainActivityPermissionsDispatcher {
 - 动态授权，对于一些流氓应用是十分有必要的。但是，有些超级流氓，如果你不授权就直接退出应用，也是无奈，比如某宝...
 - 如果Activity规模较大、需要申请权限较多时，代码就会变得混乱。
 
-针对第二点，前辈们封装了不少库。
-
-- [PermissionGen](https://github.com/lovedise/PermissionGen) 
-- [RxPermissions](https://github.com/tbruyelle/RxPermissions)
- 
-PermissionGen使用相对简单，RxPermissions支持RxJava，大家可以根据项目需要进行选择。
+针对第二点，前辈们封装了不少库，大家可以根据项目需要进行选择。
 
 ## 参考
 
 - [Working with System Permissions](http://developer.android.com/training/permissions/index.html)
 - [Requesting Permissions at Run Time](http://developer.android.com/training/permissions/requesting.html)
+- [Managing Runtime Permissions with PermissionsDispatcher](https://github.com/codepath/android_guides/wiki/Managing-Runtime-Permissions-with-PermissionsDispatcher)
