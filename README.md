@@ -169,7 +169,50 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
 
 ### 4.3 处理授权结果
 
+应用首次申请权限，用户拒绝，使用`@OnPermissionDenied`标识的方法将作为回调：
 
+```
+@OnPermissionDenied(Manifest.permission.CALL_PHONE)
+void showDeniedForCallPhone() {
+    Toast.makeText(this, "未授权", Toast.LENGTH_SHORT).show();
+}
+```
+
+应用首次申请权限被拒绝，再次申请权限时，给出提示信息，使用`@OnShowRationale`注解标识：
+
+```
+@OnShowRationale(Manifest.permission.CALL_PHONE)
+void showRationaleForCallPhone(final PermissionRequest request) {
+    new AlertDialog.Builder(this)
+            .setTitle("提示")
+            .setMessage("需要授权电话权限")
+            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    request.cancel();
+                }
+            })
+            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    request.proceed();
+                }
+            })
+            .create()
+            .show();
+}
+```
+
+应用非首次申请权限时，授权对话框会多出一个复选框`不再询问`，相应回调方法用`@OnNeverAskAgain`标识：
+
+```
+@OnNeverAskAgain(Manifest.permission.CALL_PHONE)
+void showNeverAskForPhoneCall() {
+    Toast.makeText(this, "不再询问", Toast.LENGTH_SHORT).show();
+}
+```
+
+完整代码请戳[这里](https://github.com/AaronChanSunny/AndroidRuntimePermissions/blob/feature/dispatcher/app/src/main/java/com/aaron/androidruntimepermissions/MainActivity.java)。
 
 ## 总结
 
