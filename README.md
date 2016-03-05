@@ -19,7 +19,7 @@ Android中的权限分为两大类：普通权限和危险权限，具体可以�
 
 首先，上效果图：
 
-![Runtime gif](screenshot/clip.gif)
+![Runtime gif](https://github.com/AaronChanSunny/AndroidRuntimePermissions/blob/master/screenshot/clip.gif)
 
 场景拆解：
 - 应用首次请求权限，系统弹出授权对话框（系统级，不可定制），包含`允许`和`拒绝`两个按钮。如果用户点击`允许`，应用拿到相应权限，如果点击`拒绝`，则进入下一个场景。
@@ -301,6 +301,8 @@ final class MainActivityPermissionsDispatcher {
 - 如果Activity规模较大、需要申请权限较多时，代码就会变得混乱。
 
 针对第二点，前辈们封装了不少库，大家可以根据项目需要进行选择。
+
+完整示例代码，请移步[Github](https://github.com/AaronChanSunny/AndroidRuntimePermissions)。
 
 ## 参考
 
